@@ -13,9 +13,11 @@ app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
 # Connect Bootstrap to Flask app
 Bootstrap5(app)
 
+
 @app.route('/')
 def home():
-    return "Mike's Shop"
+    return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

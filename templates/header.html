@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Mike's Shop</title>
+    <!-- Load Bootstrap-Flask CSS here -->
+    {{ bootstrap.load_css() }}
+    <!-- Load default CSS -->
+    <link href="{{ url_for('static', filename='css/default.css') }}" rel="stylesheet"/>
+</head>
+<body>
+<div class="d-flex flex-column vh-100 text-center">
+    <h1 class="display-4 mx-auto mt-5 pt-5">Mike's Shop</h1>
