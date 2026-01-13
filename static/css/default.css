@@ -1,1 +1,24 @@
-/* Intentionally left blank for now */
+body {
+    background-color: #E0D9D9;
+    color: #432323;
+}
+
+a {
+    color: #432323;
+}
+
+header {
+    background-color: #D0C9C9;
+}
+
+.btn, .btn:active:focus {
+    background-color: #432323;
+    color: #E0D9D9;
+    border-color: #E0D9D9;
+}
+
+.btn:hover {
+    background-color: #E0D9D9;
+    color: #432323;
+    border-color: #432323;
+}

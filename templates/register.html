@@ -1,0 +1,22 @@
+{% from 'bootstrap5/form.html' import render_form %}
+{% include "header.html" %}
+
+<div class="mt-auto">
+    <h1>Register</h1>
+    <p>Already have an account? <a href="{{ url_for('login') }}">Log in here</a></p>
+</div>
+<div class="container text-start">
+    <div class="row">
+        {% with messages = get_flashed_messages() %}
+        {% for message in messages %}
+        <p class="flash">{{ message }}</p>
+        {% endfor %}
+        {% endwith %}
+        <div class="col-lg-8 col-md-10 mx-auto">
+            {{ render_form(form) }}
+        </div>
+    </div>
+
+</div>
+
+{% include "footer.html" %}
