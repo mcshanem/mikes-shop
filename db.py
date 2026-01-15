@@ -24,4 +24,4 @@ class Item(db.Model):
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(String(1000), nullable=False)
     image_filename: Mapped[str] = mapped_column(String(500), nullable=False)
-    cost: Mapped[float]
+    price: Mapped[float]
