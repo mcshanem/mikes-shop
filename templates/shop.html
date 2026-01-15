@@ -1,0 +1,44 @@
+{% include "header.html" %}
+
+<div class="ms-auto">
+    <a href="{{ url_for('logout') }}" class="me-3">Log Out</a>
+</div>
+
+<div class="container my-auto">
+    <div class="row">
+        <div class="col">
+            Item 1
+            <img src="{{ url_for('static', filename='img/chess-shirt-forked.png') }}" class="img-thumbnail"
+                 alt="T-shirt with a knight chess piece and the phrase 'Get Forked'">
+        </div>
+        <div class="col">
+            Item 2
+            <img src="{{ url_for('static', filename='img/chess-shirt-italian.png') }}" class="img-thumbnail"
+                 alt="T-shirt with chess board and the phrase 'I speak fluent Italian'">
+        </div>
+        <div class="col">
+            Item 3
+            <img src="{{ url_for('static', filename='img/shirt-weird-al-sauerkraut.png') }}" class="img-thumbnail"
+                 alt="T-shirt with Weird Al quote: I hate sauerkraut">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            Item 4
+            <img src="{{ url_for('static', filename='img/cross-stitch-simpsons-nuke.png') }}" class="img-thumbnail"
+                 alt="Cross stitch depicting a whale being blown out of the water and the phrase 'Nuke the whales!'">
+        </div>
+        <div class="col">
+            Item 5
+            <img src="{{ url_for('static', filename='img/cross-stitch-wasteland.png') }}" class="img-thumbnail"
+                 alt="Cross stitch depicting a funny quote from Fallout">
+        </div>
+        <div class="col">
+            Item 6
+            <img src="{{ url_for('static', filename='img/mug-princess-bride.png') }}" class="img-thumbnail"
+                 alt="Coffee mug with a funny quote from The Princess Bride">
+        </div>
+    </div>
+</div>
+
+{% include "footer.html" %}

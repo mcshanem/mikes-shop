@@ -2,10 +2,11 @@ from flask import Flask, render_template, redirect, url_for, flash
 from flask_bootstrap import Bootstrap5
 from dotenv import load_dotenv
 import os
-from flask_login import LoginManager, login_required, logout_user
+from flask_login import LoginManager, login_required, logout_user, login_user
 from forms import LoginForm, RegisterForm
 from db import db, User
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.exc import IntegrityError
 
 # Load variables from .env file
 load_dotenv()
@@ -26,6 +27,7 @@ with app.app_context():
 # Create login manager and connect it to Flask app
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
 
 
 @login_manager.user_loader
@@ -38,9 +40,24 @@ def home():
     return render_template('index.html')
 
 
+@app.route('/shop')
+@login_required
+def shop():
+    return render_template('shop.html')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        user = db.session.scalar(db.select(User).where(User.email == form.email.data))
+        if user is None:
+            flash('Invalid email, please try again.', 'error')
+        elif not check_password_hash(user.password, form.password.data):
+            flash('Invalid password, please try again.', 'error')
+        else:
+            login_user(user)
+            return redirect(url_for('shop'))
     return render_template('login.html', form=form)
 
 
@@ -61,10 +78,15 @@ def register():
             password=generate_password_hash(form.password.data),
             name=form.name.data
         )
-        db.session.add(new_user)
-        db.session.commit()
-        flash('Registration Successful')
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            flash('Registration Successful')
+        except IntegrityError:
+            flash('That email is already associated with an account. Log in instead.', 'error')
+
         return redirect(url_for('login'))
+
     return render_template('register.html', form=form)
 
 
