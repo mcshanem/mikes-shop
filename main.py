@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 from flask_login import LoginManager, login_required, logout_user, login_user
 from forms import LoginForm, RegisterForm
-from db import db, User
+from db import db, User, Item
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 
@@ -43,7 +43,12 @@ def home():
 @app.route('/shop')
 @login_required
 def shop():
-    return render_template('shop.html')
+    print('In shop view')
+    items = db.session.scalars(db.select(Item)).all()
+    for item in items:
+        print(item.name)
+        print(type(item))
+    return render_template('shop.html', items=items)
 
 
 @app.route('/login', methods=['GET', 'POST'])
