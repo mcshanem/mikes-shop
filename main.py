@@ -2,9 +2,15 @@ from flask import Flask, render_template, redirect, url_for, flash
 from flask_bootstrap import Bootstrap5
 from dotenv import load_dotenv
 import os
-from flask_login import LoginManager, login_required, logout_user, login_user
+from flask_login import (
+    LoginManager,
+    login_required,
+    logout_user,
+    login_user,
+    current_user,
+)
 from forms import LoginForm, RegisterForm, AddToCartForm
-from db import db, User, Item
+from db import db, User, Item, CartItem
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
 
@@ -40,13 +46,47 @@ def home():
     return render_template("index.html")
 
 
-@app.route("/shop")
+@app.route("/shop", methods=["GET", "POST"])
 @login_required
 def shop():
-    print("In shop view")
     form = AddToCartForm()
+
+    # Check for AddToCartForm submission
+    if form.validate_on_submit():
+
+        # Check for matching item in user's cart
+        cart_item = db.session.scalar(
+            db.select(CartItem).where(
+                CartItem.item_id == form.item_id.data,
+                CartItem.user_id == current_user.id,
+            )
+        )
+
+        # Increase quantity if user already has item in cart
+        if cart_item:
+            cart_item.quantity += 1
+        # Add new cart item if user doesn't already have item in cart
+        else:
+            new_cart_item = CartItem(
+                user_id=current_user.id, item_id=form.item_id.data, quantity=1
+            )
+            db.session.add(new_cart_item)
+
+        db.session.commit()
+
+    # Pull all inventory items for rendering on the shop page
     items = db.session.scalars(db.select(Item)).all()
+
     return render_template("shop.html", items=items, form=form)
+
+
+@app.route("/checkout")
+@login_required
+def checkout():
+    print("In checkout view")
+    print(len(current_user.cart_items))
+    print(current_user.cart_items[0].item.name)
+    return render_template("checkout.html", cart_items=current_user.cart_items)
 
 
 @app.route("/login", methods=["GET", "POST"])

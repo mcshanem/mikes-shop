@@ -2,6 +2,7 @@
 {% include "header.html" %}
 
 <div class="ms-auto">
+    <a href="{{ url_for('checkout') }}" class="btn btn-lg">Check Out</a>
     <a href="{{ url_for('logout') }}" class="me-3">Log Out</a>
 </div>
 
@@ -23,7 +24,11 @@
                     ${{ '%0.2f' % item.price }}
                 </div>
                 <div class="col-2">
-                    {{ render_form(form) }}
+                    <form method="POST">
+                        {{ form.csrf_token }}
+                        {{ form.item_id(value=item.id) }}
+                        {{ form.submit(class_="btn") }}
+                    </form>
                 </div>
             </div>
         </div>
