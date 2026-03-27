@@ -83,10 +83,15 @@ def shop():
 @app.route("/checkout")
 @login_required
 def checkout():
-    print("In checkout view")
-    print(len(current_user.cart_items))
-    print(current_user.cart_items[0].item.name)
-    return render_template("checkout.html", cart_items=current_user.cart_items)
+    # Calculate total price
+    total_price = sum(
+        cart_item.quantity * cart_item.item.price
+        for cart_item in current_user.cart_items
+    )
+
+    return render_template(
+        "checkout.html", cart_items=current_user.cart_items, total_price=total_price
+    )
 
 
 @app.route("/login", methods=["GET", "POST"])

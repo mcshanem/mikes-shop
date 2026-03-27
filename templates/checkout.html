@@ -10,24 +10,25 @@
     <div class="container">
         {% for cart_item in cart_items %}
         <div class="row justify-content-center">
-            <div class="col-2">
-                img here
+            <div class="col-1">
+                <img src="{{ url_for('static', filename='img/' + cart_item.item.image_filename) }}" class="img-thumbnail">
             </div>
             <div class="col-3">
                 {{ cart_item.item.name }}
             </div>
             <div class="col-1">
-                Unit Price: {{ cart_item.item.price }}
+                Unit Price: {{ '%0.2f' % cart_item.item.price }}
             </div>
             <div class="col-1">
                 Quantity: {{ cart_item.quantity }}
             </div>
             <div class="col-1">
-                Total Price: {{ "%0.2f" | format(cart_item.item.price * cart_item.quantity | round(2)) }}
+                Total Price: {{ '%0.2f' % (cart_item.item.price * cart_item.quantity | round(2)) }}
             </div>
         </div>
         {% endfor %}
     </div>
+    <h3>Total: {{ '%0.2f' % total_price }}</h3>
 </div>
 
 {% include "footer.html" %}
