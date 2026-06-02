@@ -13,6 +13,7 @@ from forms import LoginForm, RegisterForm, AddToCartForm
 from db import db, User, Item, CartItem
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
+import stripe
 
 # Load variables from .env file
 load_dotenv()
@@ -34,6 +35,9 @@ with app.app_context():
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+
+# Set the Stripe API Key
+stripe.api_key = os.environ.get("STRIPE_API_KEY")
 
 
 @login_manager.user_loader
@@ -92,6 +96,34 @@ def checkout():
     return render_template(
         "checkout.html", cart_items=current_user.cart_items, total_price=total_price
     )
+
+
+@app.route("/create-checkout-session", methods=["POST"])
+def create_checkout_session():
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            line_items=[
+                {
+                    # Provide the exact Price ID (for example, price_1234) of the product you want to sell
+                    "price": "price_1TH8fGPosLaAE8XrMBMQW889",
+                    "quantity": 1,
+                },
+                {
+                    "price_data": {
+                        "currency": "USD",
+                        "product": "prod_UGRa8ela2Q9VJ4",
+                        "unit_amount": 199,
+                    },
+                    "quantity": 1,
+                },
+            ],
+            mode="payment",
+            success_url="https://www.google.com/",
+        )
+    except Exception as e:
+        return str(e)
+
+    return redirect(checkout_session.url, code=303)
 
 
 @app.route("/login", methods=["GET", "POST"])

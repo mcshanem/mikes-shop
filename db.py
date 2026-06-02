@@ -26,6 +26,7 @@ class Item(db.Model):
     description: Mapped[str] = mapped_column(String(1000), nullable=False)
     image_filename: Mapped[str] = mapped_column(String(500), nullable=False)
     price: Mapped[float]
+    stripe_product_id: Mapped[str] = mapped_column(String(100))
 
 
 class CartItem(db.Model):
