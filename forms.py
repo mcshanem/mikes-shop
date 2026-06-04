@@ -20,3 +20,9 @@ class RegisterForm(EmailPasswordForm):
 class AddToCartForm(FlaskForm):
     item_id = HiddenField(validators=[DataRequired()])
     submit = SubmitField("Add to Cart")
+
+
+class RemoveFromCartForm(FlaskForm):
+    cart_item_id = HiddenField(validators=[DataRequired()])
+    submit_one = SubmitField("Remove One")
+    submit_all = SubmitField("Remove All")

@@ -7,29 +7,44 @@
 <hr class="mx-5">
 <div class="mt-2">
     <h2>Cart Items for {{ current_user.name }}</h2>
-    <div class="container">
+    <div class="container mt-5">
         {% for cart_item in cart_items %}
-        <div class="row justify-content-center">
+        <div class="row justify-content-center align-items-center">
             <div class="col-1">
                 <img src="{{ url_for('static', filename='img/' + cart_item.item.image_filename) }}"
                      class="img-thumbnail">
             </div>
-            <div class="col-3">
-                {{ cart_item.item.name }}
+            <div class="col-4">
+                <h4>{{ cart_item.item.name }}</h4>
+            </div>
+            <div class="col-2">
+                <div class="row">
+                    <div class="col">
+                        Quantity: {{ cart_item.quantity }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        Each: ${{ '%0.2f' % cart_item.item.price }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        Total: ${{ '%0.2f' % (cart_item.item.price * cart_item.quantity | round(2)) }}
+                    </div>
+                </div>
             </div>
             <div class="col-1">
-                Unit Price: {{ '%0.2f' % cart_item.item.price }}
-            </div>
-            <div class="col-1">
-                Quantity: {{ cart_item.quantity }}
-            </div>
-            <div class="col-1">
-                Total Price: {{ '%0.2f' % (cart_item.item.price * cart_item.quantity | round(2)) }}
+                <form method="POST">
+                    {{ form.csrf_token }}
+                    {{ form.cart_item_id(value=cart_item.id) }}
+                    {{ form.submit_one(class_="btn") }}
+                </form>
             </div>
         </div>
         {% endfor %}
     </div>
-    <h3>Total: {{ '%0.2f' % total_price }}</h3>
+    <h3 class="my-3">Total: ${{ '%0.2f' % total_price }}</h3>
     <form action="{{ url_for('create_checkout_session') }}" method="POST">
         <button type="submit" id="checkout-button">Checkout with Stripe</button>
     </form>

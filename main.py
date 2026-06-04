@@ -9,7 +9,7 @@ from flask_login import (
     login_user,
     current_user,
 )
-from forms import LoginForm, RegisterForm, AddToCartForm
+from forms import LoginForm, RegisterForm, AddToCartForm, RemoveFromCartForm
 from db import db, User, Item, CartItem
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.exc import IntegrityError
@@ -84,9 +84,26 @@ def shop():
     return render_template("shop.html", items=items, form=form)
 
 
-@app.route("/checkout")
+@app.route("/checkout", methods=["GET", "POST"])
 @login_required
 def checkout():
+    form = RemoveFromCartForm()
+
+    # Check for RemoveFromCartForm submission
+    if form.validate_on_submit():
+
+        # Check for matching item in user's cart
+        cart_item = db.get_or_404(CartItem, form.cart_item_id.data)
+
+        # Decrease quantity if user has more than one of the item in cart
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+        # Remove cart item if the user only has one of the item in cart
+        else:
+            db.session.delete(cart_item)
+
+        db.session.commit()
+
     # Calculate total price
     total_price = sum(
         cart_item.quantity * cart_item.item.price
@@ -94,7 +111,10 @@ def checkout():
     )
 
     return render_template(
-        "checkout.html", cart_items=current_user.cart_items, total_price=total_price
+        "checkout.html",
+        cart_items=current_user.cart_items,
+        total_price=total_price,
+        form=form,
     )
 
 
